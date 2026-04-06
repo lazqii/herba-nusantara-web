@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AppConfig;
+use App\Models\AiModelChangelog;
 use Illuminate\Support\Facades\Storage;
 
 class AppConfigWebController extends Controller
@@ -56,6 +57,14 @@ class AppConfigWebController extends Controller
             $labelsUrlConfig = AppConfig::firstOrCreate(['key' => 'ai_model_labels_url']);
             $labelsUrlConfig->value = asset('storage/models/' . $labelsName);
             $labelsUrlConfig->save();
+
+            // Store Changelog History
+            if ($request->filled('changelog')) {
+                AiModelChangelog::create([
+                    'version' => $newVersion,
+                    'notes' => $request->input('changelog')
+                ]);
+            }
 
             return redirect()->back()->with('success', "Berhasil merilis versi OTA baru! (v{$newVersion}). Aplikasi Mobile ter-install akan menyinkron AI secara otomatis di background saat dibuka!");
         } catch (\Exception $e) {

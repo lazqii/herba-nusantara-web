@@ -20,4 +20,13 @@ class AppConfigApiController extends Controller
             'labels_url' => $labelsUrl->value ?? null,
         ]);
     }
+
+    public function changelogs()
+    {
+        $changelogs = \App\Models\AiModelChangelog::orderBy('created_at', 'desc')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $changelogs
+        ]);
+    }
 }

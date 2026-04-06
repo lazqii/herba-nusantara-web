@@ -18,6 +18,7 @@ Route::get('/categories', function() {
 });
 
 Route::get('/config/ai-model', [\App\Http\Controllers\Api\AppConfigApiController::class, 'aiModel']);
+Route::get('/config/changelogs', [\App\Http\Controllers\Api\AppConfigApiController::class, 'changelogs']);
 Route::post('/identifikasi/log', [\App\Http\Controllers\Api\IdentifikasiLogApiController::class, 'store']);
 
 Route::middleware('verify.apikey')->post('/contributions', [\App\Http\Controllers\Api\ContributionApiController::class, 'store']);

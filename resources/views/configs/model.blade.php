@@ -80,6 +80,12 @@
                             <input type="file" class="form-control" name="labels_file" accept=".txt" required>
                             <div class="form-text">Satu baris untuk setiap nama tanaman (pastikan urutan baris ke Bawah sama persis dengan urutan array output layer AI Anda dari Jupyter/Colab).</div>
                         </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">3. Catatan Rilis / Changelog (Opsional)</label>
+                            <textarea class="form-control" name="changelog" rows="4" placeholder="Ketik apa saja pembaruan atau bug yang diperbaiki di model ini..."></textarea>
+                            <div class="form-text">Catatan ini akan muncul otomatis sebagai Pop-Up dan Notifikasi Histori di aplikasi Mobile saat mereka menerima update.</div>
+                        </div>
                         
                         <hr/>
                         <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
