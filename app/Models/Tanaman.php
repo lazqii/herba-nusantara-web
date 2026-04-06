@@ -8,14 +8,20 @@ class Tanaman extends Model
 {
     protected $table = 'tanamans';
     protected $fillable = [
+        'category_id',
         'nama_tanaman',
-        'deskripsi',
-        'gambar',
-        'kategori',
         'nama_ilmiah',
+        'kategori', // Keeping for now for migration purposes
+        'deskripsi',
         'khasiat',
         'olahan',
         'efek_samping',
-        'sumber'
+        'sumber',
+        'gambar'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

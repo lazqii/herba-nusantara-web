@@ -32,17 +32,16 @@
                     </div>
 
                     <div class="mb-3 border p-3 rounded">
-                        <label for="kategori" class="form-label fw-bold">Kategori</label>
-                        <select name="kategori" id="kategori" class="form-select @error('kategori') is-invalid @enderror">
+                        <label for="category_id" class="form-label fw-bold">Kategori <span class="text-danger">*</span></label>
+                        <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
                             <option value="">-- Pilih Kategori --</option>
-                            <option value="Daun" {{ old('kategori', $tanaman->kategori) == 'Daun' ? 'selected' : '' }}>Daun</option>
-                            <option value="Rimpang" {{ old('kategori', $tanaman->kategori) == 'Rimpang' ? 'selected' : '' }}>Rimpang</option>
-                            <option value="Batang" {{ old('kategori', $tanaman->kategori) == 'Batang' ? 'selected' : '' }}>Batang</option>
-                            <option value="Bunga" {{ old('kategori', $tanaman->kategori) == 'Bunga' ? 'selected' : '' }}>Bunga</option>
-                            <option value="Akar" {{ old('kategori', $tanaman->kategori) == 'Akar' ? 'selected' : '' }}>Akar</option>
-                            <option value="Buah" {{ old('kategori', $tanaman->kategori) == 'Buah' ? 'selected' : '' }}>Buah</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $tanaman->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->nama_kategori }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('kategori') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-3">
@@ -108,6 +107,4 @@
         </div>
     </div>
 </div>
-@endsection
-
 @endsection

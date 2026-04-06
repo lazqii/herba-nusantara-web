@@ -8,6 +8,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'ceklevel' => \App\Http\Middleware\CekLevel::class,
+            'verify.apikey' => \App\Http\Middleware\VerifyAppApiKey::class,
         ]);
     })
     

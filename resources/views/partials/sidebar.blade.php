@@ -27,6 +27,38 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('category.index') }}" class="nav-link text-white {{ request()->is('category*') ? 'active' : '' }}">
+                    <i class="bi bi-tags me-2"></i>
+                    Data Kategori
+                </a>
+            </li>
+
+            <li class="nav-item mt-3 mb-1">
+                <span class="text-white-50 small text-uppercase fw-bold ps-3" style="font-size: 0.75rem;">Manajemen Dataset</span>
+            </li>
+
+            <li>
+                <a href="{{ route('contributions.pending') }}" class="nav-link text-white {{ request()->routeIs('contributions.pending') ? 'active' : '' }}">
+                    <i class="bi bi-hourglass-split me-2"></i>
+                    Dataset Pending
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('contributions.approved') }}" class="nav-link text-white {{ request()->routeIs('contributions.approved') ? 'active' : '' }}">
+                    <i class="bi bi-check2-all me-2"></i>
+                    Dataset Approved
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('configs.model.index') }}" class="nav-link text-white {{ request()->is('configs/model*') ? 'active' : '' }}">
+                    <i class="bi bi-cpu me-2"></i>
+                    Update Model AI
+                </a>
+            </li>
+
         @endif
 
     </ul>

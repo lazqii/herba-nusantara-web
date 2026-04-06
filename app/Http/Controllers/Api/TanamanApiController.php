@@ -11,8 +11,9 @@ class TanamanApiController extends Controller
 {
     public function index()
     {
-        $tanamans = Tanaman::all()->map(function ($tanaman) {
+        $tanamans = Tanaman::with('category')->get()->map(function ($tanaman) {
             $tanaman->gambar_url = $tanaman->gambar ? url(Storage::url($tanaman->gambar)) : null;
+            $tanaman->kategori_name = $tanaman->category ? $tanaman->category->nama_kategori : ($tanaman->kategori ?? '-');
             return $tanaman;
         });
 
@@ -25,10 +26,11 @@ class TanamanApiController extends Controller
 
     public function show($id)
     {
-        $tanaman = Tanaman::find($id);
+        $tanaman = Tanaman::with('category')->find($id);
 
         if ($tanaman) {
             $tanaman->gambar_url = $tanaman->gambar ? url(Storage::url($tanaman->gambar)) : null;
+            $tanaman->kategori_name = $tanaman->category ? $tanaman->category->nama_kategori : ($tanaman->kategori ?? '-');
             
             return response()->json([
                 'success' => true,

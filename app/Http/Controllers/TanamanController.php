@@ -25,16 +25,17 @@ class TanamanController extends Controller
 
     public function create()
     {
-        return view('tanaman.create');
+        $categories = \App\Models\Category::all();
+        return view('tanaman.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'category_id' => 'required|exists:categories,id',
             'nama_tanaman' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'kategori' => 'nullable|string|max:100',
             'nama_ilmiah' => 'nullable|string|max:255',
             'khasiat' => 'nullable|string',
             'olahan' => 'nullable|string',
@@ -60,16 +61,17 @@ class TanamanController extends Controller
 
     public function edit(Tanaman $tanaman)
     {
-        return view('tanaman.edit', compact('tanaman'));
+        $categories = \App\Models\Category::all();
+        return view('tanaman.edit', compact('tanaman', 'categories'));
     }
 
     public function update(Request $request, Tanaman $tanaman)
     {
         $request->validate([
+            'category_id' => 'required|exists:categories,id',
             'nama_tanaman' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'kategori' => 'nullable|string|max:100',
             'nama_ilmiah' => 'nullable|string|max:255',
             'khasiat' => 'nullable|string',
             'olahan' => 'nullable|string',
@@ -78,7 +80,7 @@ class TanamanController extends Controller
         ]);
 
         $input = $request->only([
-            'nama_tanaman', 'deskripsi', 'kategori', 
+            'category_id', 'nama_tanaman', 'deskripsi', 
             'nama_ilmiah', 'khasiat', 'olahan', 
             'efek_samping', 'sumber'
         ]);

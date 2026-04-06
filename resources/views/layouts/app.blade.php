@@ -9,42 +9,53 @@
     
     <style>
         body {
-            display: flex;
-            flex-wrap: nowrap;
-            height: 100vh;
-            height: -webkit-fill-available;
-            overflow-x: auto;
-            overflow-y: hidden;
+            background-color: #f8f9fa;
         }
-        .b-example-divider {
-            flex-shrink: 0;
-            width: 1.5rem;
+        .sidebar-container {
+            width: 280px;
             height: 100vh;
-            background-color: rgba(0, 0, 0, .1);
-            border: solid rgba(0, 0, 0, .15);
-            border-width: 1px 0;
-            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-        }
-        .scrollarea {
+            position: fixed;
+            top: 0;
+            left: 0;
             overflow-y: auto;
-            width: 100%;
+            z-index: 1000;
+        }
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        @media (max-width: 768px) {
+            .sidebar-container {
+                position: relative;
+                width: 100%;
+                height: auto;
+                min-height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-    @include('partials.sidebar')
+    <div class="sidebar-container bg-dark text-white">
+        @include('partials.sidebar')
+    </div>
 
-    <div class="d-flex flex-column flex-grow-1 overflow-auto bg-light">
-        <header class="p-3 mb-3 border-bottom bg-white">
+    <div class="main-content">
+        <header class="p-3 mb-3 border-bottom bg-white sticky-top">
             <div class="container-fluid">
-                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <h4>@yield('title')</h4>
+                <div class="d-flex flex-wrap align-items-center justify-content-between">
+                    <h4 class="mb-0">@yield('title')</h4>
                 </div>
             </div>
         </header>
 
-        <main class="p-4">
+        <main class="p-4 flex-grow-1">
             @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="bi bi-check-circle-fill me-2"></i>
