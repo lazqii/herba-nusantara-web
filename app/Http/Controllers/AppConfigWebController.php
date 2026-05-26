@@ -11,37 +11,32 @@ class AppConfigWebController extends Controller
 {
     public function index()
     {
-        $version = AppConfig::where('key', 'ai_model_version')->first()->value ?? 1;
-        $url = AppConfig::where('key', 'ai_model_url')->first()->value ?? null;
-        $labelsUrl = AppConfig::where('key', 'ai_model_labels_url')->first()->value ?? null;
-        
-        return view('configs.model', [
-            'version' => $version,
-            'url' => $url,
-            'labels_url' => $labelsUrl
-        ]);
+        return view('configs.model');
     }
 
     public function update(Request $request)
     {
         $request->validate([
+            'category' => 'required|string|in:daun,rimpang,batang',
             'model_file' => 'required|file',
             'labels_file' => 'required|file',
         ]);
 
         try {
+            $cat = $request->input('category');
+
             // Save Model
             $modelFile = $request->file('model_file');
-            $modelName = 'model_v' . time() . '.tflite';
+            $modelName = 'model_' . $cat . '_v' . time() . '.tflite';
             $modelPath = $modelFile->storeAs('models', $modelName, 'public');
 
             // Save Labels
             $labelsFile = $request->file('labels_file');
-            $labelsName = 'labels_v' . time() . '.txt';
+            $labelsName = 'labels_' . $cat . '_v' . time() . '.txt';
             $labelsPath = $labelsFile->storeAs('models', $labelsName, 'public');
 
             // Increment Version
-            $versionConfig = AppConfig::firstOrCreate(['key' => 'ai_model_version']);
+            $versionConfig = AppConfig::firstOrCreate(['key' => "ai_model_version_{$cat}"]);
             $currentVersion = (int)($versionConfig->value ?? 0);
             $newVersion = $currentVersion + 1;
             
@@ -49,24 +44,24 @@ class AppConfigWebController extends Controller
             $versionConfig->save();
 
             // Store Dynamic Asset URL for Model
-            $urlConfig = AppConfig::firstOrCreate(['key' => 'ai_model_url']);
+            $urlConfig = AppConfig::firstOrCreate(['key' => "ai_model_url_{$cat}"]);
             $urlConfig->value = asset('storage/models/' . $modelName);
             $urlConfig->save();
 
             // Store Dynamic Asset URL for Labels
-            $labelsUrlConfig = AppConfig::firstOrCreate(['key' => 'ai_model_labels_url']);
+            $labelsUrlConfig = AppConfig::firstOrCreate(['key' => "ai_model_labels_url_{$cat}"]);
             $labelsUrlConfig->value = asset('storage/models/' . $labelsName);
             $labelsUrlConfig->save();
 
             // Store Changelog History
             if ($request->filled('changelog')) {
                 AiModelChangelog::create([
-                    'version' => $newVersion,
-                    'notes' => $request->input('changelog')
+                    'version' => $newVersion, // Still using version, maybe we can append category in notes
+                    'notes' => "[Kategori: " . ucfirst($cat) . "] " . $request->input('changelog')
                 ]);
             }
 
-            return redirect()->back()->with('success', "Berhasil merilis versi OTA baru! (v{$newVersion}). Aplikasi Mobile ter-install akan menyinkron AI secara otomatis di background saat dibuka!");
+            return redirect()->back()->with('success', "Berhasil merilis versi OTA baru untuk kategori " . ucfirst($cat) . "! (v{$newVersion}).");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mempublish file: ' . $e->getMessage());
         }

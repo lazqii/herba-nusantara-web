@@ -9,15 +9,24 @@ class AppConfigApiController extends Controller
 {
     public function aiModel()
     {
-        $version = \App\Models\AppConfig::where('key', 'ai_model_version')->first();
-        $url = \App\Models\AppConfig::where('key', 'ai_model_url')->first();
-        $labelsUrl = \App\Models\AppConfig::where('key', 'ai_model_labels_url')->first();
+        $categories = ['daun', 'rimpang', 'batang'];
+        $models = [];
+        
+        foreach ($categories as $cat) {
+            $version = \App\Models\AppConfig::where('key', "ai_model_version_{$cat}")->first();
+            $url = \App\Models\AppConfig::where('key', "ai_model_url_{$cat}")->first();
+            $labelsUrl = \App\Models\AppConfig::where('key', "ai_model_labels_url_{$cat}")->first();
+
+            $models[$cat] = [
+                'version' => (int)($version->value ?? 0),
+                'url' => $url->value ?? null,
+                'labels_url' => $labelsUrl->value ?? null,
+            ];
+        }
 
         return response()->json([
             'success' => true,
-            'version' => (int)($version->value ?? 1),
-            'url' => $url->value ?? null,
-            'labels_url' => $labelsUrl->value ?? null,
+            'models' => $models,
         ]);
     }
 

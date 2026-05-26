@@ -23,40 +23,61 @@
         </div>
     @endif
 
+    @php
+        $categories = ['daun', 'rimpang', 'batang'];
+    @endphp
+
     <div class="row">
-        <div class="col-md-5 mb-4">
+        <div class="col-md-6 mb-4">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Status Versi Saat Ini</h5>
                 </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Version</strong>
-                            <span class="badge bg-success rounded-pill px-3 py-2">v{{ $version }}</span>
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Model File URL (.tflite):</strong><br/>
-                            @if($url)
-                                <a href="{{ $url }}" target="_blank" class="text-break fs-6" style="word-break: break-all;">{{ $url }}</a>
-                            @else
-                                <span class="text-muted text-break">Belum ada file terupload</span>
-                            @endif
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Labels File URL (.txt):</strong><br/>
-                            @if($labels_url)
-                                <a href="{{ $labels_url }}" target="_blank" class="text-break fs-6" style="word-break: break-all;">{{ $labels_url }}</a>
-                            @else
-                                <span class="text-muted text-break">Belum ada file terupload</span>
-                            @endif
-                        </li>
-                    </ul>
+                <div class="card-body p-0">
+                    <div class="accordion accordion-flush" id="accordionStatus">
+                        @foreach($categories as $cat)
+                        @php
+                            $catVersion = \App\Models\AppConfig::where('key', "ai_model_version_{$cat}")->first()->value ?? 0;
+                            $catUrl = \App\Models\AppConfig::where('key', "ai_model_url_{$cat}")->first()->value ?? null;
+                            $catLabels = \App\Models\AppConfig::where('key', "ai_model_labels_url_{$cat}")->first()->value ?? null;
+                        @endphp
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button {{ $loop->first ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ $cat }}">
+                                    Kategori: <strong class="ms-1 text-capitalize">{{ $cat }}</strong>
+                                    <span class="badge bg-success rounded-pill ms-auto">v{{ $catVersion }}</span>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse-{{ $cat }}" class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}" data-bs-parent="#accordionStatus">
+                                <div class="accordion-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item px-0">
+                                            <strong>Model (.tflite):</strong><br/>
+                                            @if($catUrl)
+                                                <a href="{{ $catUrl }}" target="_blank" class="text-break fs-6" style="word-break: break-all;">{{ $catUrl }}</a>
+                                            @else
+                                                <span class="text-muted text-break">Belum ada file terupload</span>
+                                            @endif
+                                        </li>
+                                        <li class="list-group-item px-0">
+                                            <strong>Labels (.txt):</strong><br/>
+                                            @if($catLabels)
+                                                <a href="{{ $catLabels }}" target="_blank" class="text-break fs-6" style="word-break: break-all;">{{ $catLabels }}</a>
+                                            @else
+                                                <span class="text-muted text-break">Belum ada file terupload</span>
+                                            @endif
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">Upload Pembaruan File TFLite</h5>
@@ -64,6 +85,16 @@
                 <div class="card-body">
                     <form action="{{ route('configs.model.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Pilih Kategori Model</label>
+                            <select class="form-select" name="category" required>
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
+                                <option value="daun">Daun</option>
+                                <option value="rimpang">Rimpang</option>
+                                <option value="batang">Batang</option>
+                            </select>
+                        </div>
                         
                         <div class="alert alert-info py-2">
                             <i class="bi bi-info-circle me-2"></i> Input resolusi tetap harus dikonfigurasi ke <b>224x224</b> pixels sesuai default MobileNetV2.

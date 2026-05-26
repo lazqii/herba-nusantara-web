@@ -11,7 +11,12 @@ class DashboardController extends Controller
     public function index()
     {
         $today = Carbon::today();
+        
+        $totalTanaman = \App\Models\Tanaman::count();
+        $pendingDataset = \App\Models\Contribution::where('status', 'pending')->count();
+        
+        $totalDataset = \App\Models\Contribution::count();
 
-        return view('dashboard');
+        return view('dashboard', compact('totalTanaman', 'pendingDataset', 'totalDataset'));
     }
 }
